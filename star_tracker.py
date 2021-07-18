@@ -5,6 +5,10 @@ import plotting as pl
 
 
 def stars_inside_FOV(points, camera, FOV):
+    """Returns stars within camera FOV.
+    points - all stars on the unity sphere
+    camera - camera orientation
+    FOV - Field Of View angle"""
     points_inside = []
     for point in points:
         # camera
