@@ -1,3 +1,4 @@
+import catalog
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -77,14 +78,7 @@ def q_to_R(q):
     ])
 
 
-# read from the star catalog
-with open('data/catalog.dat') as f:
-    #lines = f.readlines()
-    lines = [f.readline() for _ in range(100000)]
-
-# extract the star positions from the catalog
-stars_list = [(float(line[153:164]), float(line[167:177])) for line in lines]
-stars = np.array(stars_list)
+stars = catalog.get_stars(num_of=100_000)
 
 # plot points on the sphere
 #plot_on_sphere(stars)

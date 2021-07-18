@@ -11,7 +11,7 @@ CATALOG = \
 all: run
 
 run: $(CATALOG_FOLDER)
-	@python3 parser.py
+	@python3 star_tracker.py
 
 download: $(CATALOG)
 
