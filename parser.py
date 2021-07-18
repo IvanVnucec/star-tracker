@@ -80,7 +80,7 @@ def q_to_R(q):
 # read from the star catalog
 with open('data/catalog.dat') as f:
     #lines = f.readlines()
-    lines = [f.readline() for _ in range(10000)]
+    lines = [f.readline() for _ in range(100)]
 
 # extract the star positions from the catalog
 stars_list = [(float(line[153:164]), float(line[167:177])) for line in lines]
