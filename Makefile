@@ -1,12 +1,19 @@
-.PHONY: download run
+.PHONY: all download run
 
 SCRIPTS_FOLDER = scripts
-DATA_FOLDER = data
+CATALOG_FOLDER = data
+CATALOG = \
+	data/catalog.dat \
+	data/index.dat   \
+	data/suppl_1.dat \
+	data/suppl_2.dat \
 
-download: $(DATA_FOLDER)
+all: run
 
-run: $(DATA_FOLDER)
+run: $(CATALOG_FOLDER)
 	@python3 parser.py
 
-$(DATA_FOLDER):
+download: $(CATALOG)
+
+$(CATALOG):
 	@./$(SCRIPTS_FOLDER)/download_catalog.sh
