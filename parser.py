@@ -158,7 +158,7 @@ v = stars_2d[:,1]
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.scatter(u, v, s=1)
-ax.set_box_aspect(aspect = 1)
+plt.gca().set_aspect('equal', adjustable='box')
 plt.show()
 
 # TODO: stars_2d
