@@ -15,6 +15,7 @@ def _read_catalog(num_of=ALL):
         if num_of == ALL:
             lines = f.readlines()
         else:
+            # TODO: pick random lines
             lines = [f.readline() for _ in range(num_of)]
     
     return lines
