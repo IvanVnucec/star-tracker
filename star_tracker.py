@@ -1,28 +1,19 @@
 import catalog
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-def spher_to_cart(p):
-    phi, theta, r = p[0], p[1], p[2]
-
-    x = r * np.sin(phi) * np.cos(theta)
-    y = r * np.sin(phi) * np.sin(theta)
-    z = r * np.cos(phi)
-
-    return x, y, z
+import transformations as tr
 
 
 def plot_on_sphere(points):
     # create a sphere
     r = 1.0
     phi, theta = np.mgrid[0.0:np.pi:100j, 0.0:2.0*np.pi:100j]
-    x, y, z = spher_to_cart((phi, theta, r))
+    x, y, z = tr.spher_to_cart((phi, theta, r))
 
     # import data
     r = 1.0
     phi, theta = np.hsplit(points, 2)
-    xx, yy, zz = spher_to_cart((phi, theta, r))
+    xx, yy, zz = tr.spher_to_cart((phi, theta, r))
 
     # set colours and render
     fig = plt.figure()
@@ -37,11 +28,11 @@ def stars_inside_FOV(points, camera, FOV):
     points_inside = []
     for point in points:
         # camera
-        x, y, z = spher_to_cart((camera[0], camera[1], 1.0))
+        x, y, z = tr.spher_to_cart((camera[0], camera[1], 1.0))
         v1 = np.array([x, y, z])
 
         # point
-        x, y, z = spher_to_cart((point[0], point[1], 1.0))
+        x, y, z = tr.spher_to_cart((point[0], point[1], 1.0))
         v2 = np.array([x, y, z])
 
         uv1 = v1 / np.linalg.norm(v1)
@@ -139,7 +130,7 @@ print('M\n', M)
 stars_2d = np.empty((len(stars_fov), 3)) # in the end should be [u, v, 1]
 for i, star in enumerate(stars_fov):
     star_spher_coord = (star[0], star[1], 1.0) 
-    U, V, W = spher_to_cart(star_spher_coord)
+    U, V, W = tr.spher_to_cart(star_spher_coord)
     point = np.array([U, V, W, 1])
     proj = M.dot(point)
     stars_2d[i] = proj
