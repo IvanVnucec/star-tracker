@@ -38,7 +38,7 @@ class Camera:
             [0, f, 0, 0],
             [0, 0, 1, 0]])
 
-        self.M_aff_proj = Maff.dot(Mproj)
+        self.Mint = Maff.dot(Mproj)
 
     def _get_stars_in_FOV(self, stars, phi, theta):
         """Return only the stars that the star tracker could see.
@@ -101,7 +101,7 @@ class Camera:
             [Mext11, Mext12],
             [Mext21, Mext22]])
 
-        M = self.M_aff_proj.dot(Mext)
+        M = self.Mint.dot(Mext)
 
         # TODO: in the end should be [u, v, 1.0] but we are not getting number 1.0
         stars_2d = np.empty((len(stars_in_fov), 3))
