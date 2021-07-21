@@ -10,14 +10,12 @@ import transformations as tr
 
 def plot_on_sphere(points):
     # create a sphere
-    r = 1.0
     phi, theta = np.mgrid[0.0:np.pi:100j, 0.0:2.0*np.pi:100j]
-    x, y, z = tr.spher_to_cart((phi, theta, r))
+    x, y, z = tr.spher_to_cart((phi, theta))
 
     # import data
-    r = 1.0
     phi, theta = np.hsplit(points, 2)
-    xx, yy, zz = tr.spher_to_cart((phi, theta, r))
+    xx, yy, zz = tr.spher_to_cart((phi, theta))
 
     # set colours and render
     fig = plt.figure()

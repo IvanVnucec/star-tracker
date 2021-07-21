@@ -3,6 +3,7 @@ About:
     The functions in this file are used to interface with the Tycho-2 star catalog.
 """
 
+from star import Star
 import numpy as np
 
 ALL = 0
@@ -22,12 +23,20 @@ def _read_catalog(num_of=ALL):
 
 
 def get_stars(num_of=ALL):
-    """Returns the number of stars from the star catalog. Read all by default."""
+    """Returns stars from the Catalog
+
+    Args:
+        num_of (integer, optional): Number of stars to load from the catalog. Defaults to ALL.
+
+    Returns:
+        list: List of Star objects. 
+    """
     lines = _read_catalog(num_of)
 
-    # extract the star positions from the catalog
-    stars_list = [(float(line[153:164]), float(line[167:177]))
-                  for line in lines]
-    stars = np.array(stars_list)
+    stars = []
+    for line in lines:
+        right_asc = float(line[153:164])    # deg
+        declination = float(line[167:177])  # deg
+        stars.append(Star(right_asc, declination))
 
     return stars

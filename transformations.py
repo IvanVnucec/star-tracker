@@ -7,7 +7,8 @@ import numpy as np
 
 def spher_to_cart(p):
     """ Spherical to Cartesian coordinates transform. """
-    phi, theta, r = p[0], p[1], p[2]
+    phi, theta = p[0], p[1]
+    r = 1.0 # unity sphere
 
     x = r * np.sin(phi) * np.cos(theta)
     y = r * np.sin(phi) * np.sin(theta)
