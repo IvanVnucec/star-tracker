@@ -90,6 +90,7 @@ class Camera:
             [np.cos(phi) * np.sin(theta)],
             [np.sin(phi)]])
         q = np.vstack((e, 1.0))
+        q = q / np.linalg.norm(q)
 
         Rc = tr.q_to_R(q)  # quaternion to rot. matrix
 
