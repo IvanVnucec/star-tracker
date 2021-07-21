@@ -40,27 +40,28 @@ class Camera:
 
         self.Mint = Maff.dot(Mproj)
 
-    def _get_stars_in_FOV(self, stars, phi, theta):
+    def _get_stars_in_FOV(self, stars, orientation):
         """Return only the stars that the star tracker could see.
 
         Args:
             stars (list): list of stars
-            phi (float): orientation angle
-            theta (float): orientation angle2
+            orientation (tuple): camera orientation
 
         Returns:
             list: list of stars within FOV
         """
         # TODO: Maybe we could already use camera orientation angles
         # and not convert it to xyz cartesian vector
+        
+        # camera
+        x, y, z = tr.spher_to_cart(orientation)
+        v1 = np.array([x, y, z])
+
         stars_fov = []
         for star in stars:
-            # camera
-            x, y, z = tr.spher_to_cart((phi, theta, 1.0))
-            v1 = np.array([x, y, z])
-
             # star
-            x, y, z = tr.spher_to_cart((star[0], star[1], 1.0))
+            star_coord = star.get_coords()
+            x, y, z = tr.spher_to_cart(star_coord)
             v2 = np.array([x, y, z])
 
             # calculate angles between star and camera vectors
@@ -74,17 +75,17 @@ class Camera:
 
         return stars_fov
 
-    def _project_on_canvas(self, stars_in_fov, phi, theta):
+    def _project_on_canvas(self, stars_in_fov, orientation):
         """Project stars on unity sphere to 2D camera canvas.
 
         Args:
             stars_in_fov (list): List of stars inside FOV
-            phi (float): orientation angle
-            theta (float): orientation angle2
+            orientation (tuple): camera orientation
 
         Returns:
             numpy array: 2D projected stars.
         """
+        phi, theta = orientation[0], orientation[1]
         e = np.array([
             [np.cos(phi) * np.cos(theta)],
             [np.cos(phi) * np.sin(theta)],
@@ -95,7 +96,7 @@ class Camera:
         Rc = tr.q_to_R(q)  # quaternion to rot. matrix
 
         Mext11 = Rc.T
-        Mext12 = - Rc.T.dot(self.tc).reshape(3, 1)
+        Mext12 = -1 * Rc.T.dot(self.tc).reshape(3, 1)
         Mext21 = np.zeros((1, 3))
         Mext22 = 1.0
         Mext = np.block([
@@ -107,7 +108,7 @@ class Camera:
         # TODO: in the end should be [u, v, 1.0] but we are not getting number 1.0
         stars_2d = np.empty((len(stars_in_fov), 3))
         for i, star in enumerate(stars_in_fov):
-            star_spher_coord = (star[0], star[1], 1.0)
+            star_spher_coord = star.get_coords()
             U, V, W = tr.spher_to_cart(star_spher_coord)
             point = np.array([U, V, W, 1])
             proj = M.dot(point)
@@ -123,8 +124,7 @@ class Camera:
             stars (numpy array): all stars that can camera capture
             orientation (tuple): tuple of phi and theta angles
         """
-        phi, theta = orientation[0], orientation[1]
-        stars_in_fov = self._get_stars_in_FOV(stars, phi, theta)
-        stars_2d = self._project_on_canvas(stars_in_fov, phi, theta)
+        stars_in_fov = self._get_stars_in_FOV(stars, orientation)
+        stars_2d = self._project_on_canvas(stars_in_fov, orientation)
 
         return stars_2d
