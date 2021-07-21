@@ -31,12 +31,15 @@ def get_stars(num_of=ALL):
     Returns:
         list: List of Star objects. 
     """
-    lines = _read_catalog(num_of)
+    lines = _read_catalog()
 
     stars = []
-    for line in lines:
-        right_asc = float(line[153:164])    # deg
-        declination = float(line[167:177])  # deg
+    for i in range(0, len(lines), len(lines)//num_of):
+        right_asc_str = lines[i][152:164]    # deg
+        declination_str = lines[i][165:177]  # deg
+        
+        right_asc = np.rad2deg(float(right_asc_str))        # rad
+        declination = np.rad2deg(float(declination_str))    # rad
         stars.append(Star(right_asc, declination))
 
     return stars

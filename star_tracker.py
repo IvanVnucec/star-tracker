@@ -3,7 +3,7 @@ import plotting as pl
 from camera import Camera
 
 
-NUM_OF_STARS = 10_000
+NUM_OF_STARS = 1_000
 
 # camera parameters
 FOV = 20        # deg
@@ -15,7 +15,7 @@ v0 = 0.01       # m
 camera = Camera(FOV, f, rhou, rhov, u0, v0)
 
 stars = catalog.get_stars(NUM_OF_STARS)
-# pl.plot_on_sphere(stars)
+pl.plot_on_sphere(stars)
 
 # TODO: pick some randomly generated orientation
 camera_orientation = (3.14159/6, -1.0)

@@ -8,20 +8,23 @@ import matplotlib.pyplot as plt
 import transformations as tr
 
 
-def plot_on_sphere(points):
+def plot_on_sphere(stars):
     # create a sphere
     phi, theta = np.mgrid[0.0:np.pi:100j, 0.0:2.0*np.pi:100j]
-    x, y, z = tr.spher_to_cart((phi, theta))
+    x, y, z = tr.spher_to_cart(phi, theta)
 
     # import data
-    phi, theta = np.hsplit(points, 2)
-    xx, yy, zz = tr.spher_to_cart((phi, theta))
+    phi   = np.empty(len(stars)) 
+    theta = np.empty(len(stars))
+    for i, star in enumerate(stars):
+        phi[i], theta[i] = star.get_coords()
+
+    xx, yy, zz = tr.spher_to_cart(phi, theta)
 
     # set colours and render
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(x, y, z, rstride=1, cstride=1,
-                    color='c', alpha=0.1, linewidth=0)
+    ax.plot_surface(x, y, z, rstride=1, cstride=1, color='c', alpha=0.1, linewidth=0)
     ax.scatter(xx, yy, zz, color="k", s=1)
     ax.set_box_aspect(aspect=(1, 1, 1))
     plt.show()

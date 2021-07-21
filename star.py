@@ -10,8 +10,8 @@ Links:
 class Star:
     def __init__(self, ra, dec) -> None:
         # TODO: Add comments to function
-        self.ra = ra
-        self.dec = dec
+        self.ra = ra    # rad
+        self.dec = dec  # rad
 
     def get_coords(self):
         """Return right ascention and declination in J2000
