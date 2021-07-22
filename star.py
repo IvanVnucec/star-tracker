@@ -7,7 +7,7 @@ Links:
 """
 
 
-from math import sin, cos
+import transformations as tr
 
 
 class Star:
@@ -27,11 +27,5 @@ class Star:
     def get_xyz(self):
         # TODO: Add description
         ra, dec = self.get_ra_dec()
-        r = 1.0 # unity sphere
-
-        x = r * cos(dec) * cos(ra)
-        y = r * cos(dec) * sin(ra)
-        z = r * sin(dec)
-
-        return (x, y, z)
+        return tr.ra_dec_to_xyz(ra, dec)
     
