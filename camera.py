@@ -54,14 +54,13 @@ class Camera:
         # and not convert it to xyz cartesian vector
         
         # camera
-        x, y, z = tr.spher_to_cart(orientation[0], orientation[1])
+        x, y, z = tr.ra_dec_to_xyz(orientation[0], orientation[1])
         v1 = np.array([x, y, z])
 
         stars_fov = []
         for star in stars:
             # star
-            star_coord = star.get_coords()
-            x, y, z = tr.spher_to_cart(star_coord[0], star_coord[1])
+            x, y, z = star.get_xyz()
             v2 = np.array([x, y, z])
 
             # calculate angles between star and camera vectors
@@ -108,8 +107,7 @@ class Camera:
         # TODO: in the end should be [u, v, 1.0] but we are not getting number 1.0
         stars_2d = np.empty((len(stars_in_fov), 3))
         for i, star in enumerate(stars_in_fov):
-            theta, phi = star.get_coords()
-            U, V, W = tr.spher_to_cart(theta, phi)
+            U, V, W = star.get_xyz()
             point = np.array([U, V, W, 1])
             proj = M.dot(point)
             stars_2d[i] = proj

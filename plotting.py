@@ -11,15 +11,14 @@ import transformations as tr
 def plot_on_sphere(stars):
     # create a sphere
     phi, theta = np.mgrid[0.0:np.pi:100j, 0.0:2.0*np.pi:100j]
-    x, y, z = tr.spher_to_cart(phi, theta)
+    x, y, z = tr.ra_dec_to_xyz(phi, theta)
 
     # import data
-    phi   = np.empty(len(stars)) 
-    theta = np.empty(len(stars))
+    xx   = np.empty(len(stars)) 
+    yy = np.empty(len(stars))
+    zz = np.empty(len(stars))
     for i, star in enumerate(stars):
-        phi[i], theta[i] = star.get_coords()
-
-    xx, yy, zz = tr.spher_to_cart(phi, theta)
+        xx[i], yy[i], zz[i] = star.get_xyz()
 
     # set colours and render
     fig = plt.figure()

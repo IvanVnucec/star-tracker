@@ -5,14 +5,14 @@ Various coordinate transformations.
 import numpy as np
 
 
-def spher_to_cart(phi, theta):
+def ra_dec_to_xyz(ra, dec):
     """ Unit Spherical to Cartesian coordinates transform. """
     r = 1.0
-    x = r*np.sin(phi)*np.cos(theta)
-    y = r*np.sin(phi)*np.sin(theta)
-    z = r*np.cos(phi)
+    x = r * np.cos(dec) * np.cos(ra)
+    y = r * np.cos(dec) * np.sin(ra)
+    z = r * np.sin(dec)
 
-    return x, y, z
+    return (x, y, z)
 
 
 def q_to_R(q):
