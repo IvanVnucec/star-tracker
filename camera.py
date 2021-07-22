@@ -5,8 +5,9 @@ import numpy as np
 import transformations as tr
 import plotting as pl
 
+
 class Camera:
-    def __init__(self, FOV, f, rhou, rhov, u0, v0) -> None:
+    def __init__(self):
         """Camera initialization
 
         Args:
@@ -17,6 +18,14 @@ class Camera:
             u0 (float): horizontal origin of the image plane in meters
             v0 (float): vertical origin of the image plane in meters
         """
+        # camera parameters
+        FOV = 20        # deg
+        f = 50e-3       # m
+        rhou = 1.4e-6   # sizes of each pixels in m
+        rhov = 1.4e-6   # sizes of each pixels in m
+        u0 = 0.01       # m
+        v0 = 0.01       # m
+        
         self.FOV = FOV
         self.f = f
         self.rhou = rhou

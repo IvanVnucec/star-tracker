@@ -6,23 +6,20 @@ About:
 from star import Star
 import numpy as np
 
+NUM_OF_STARS = 10_000
 ALL = 0
 CATALOG = 'data/catalog.dat'
 
 
-def _read_catalog(num_of=ALL):
+def _read_catalog():
     """Reads lines from catalog file."""
     with open(CATALOG) as f:
-        if num_of == ALL:
-            lines = f.readlines()
-        else:
-            # TODO: pick random lines
-            lines = [f.readline() for _ in range(num_of)]
+        lines = [f.readline() for _ in range(NUM_OF_STARS)]
     
     return lines
 
 
-def get_stars(num_of=ALL):
+def get_stars():
     """Returns stars from the Catalog
 
     Args:
@@ -34,7 +31,7 @@ def get_stars(num_of=ALL):
     lines = _read_catalog()
 
     stars = []
-    for i in range(0, len(lines), len(lines)//num_of):
+    for i in range(0, len(lines), len(lines)//NUM_OF_STARS):
         right_asc_str = lines[i][152:164]    # deg
         declination_str = lines[i][165:177]  # deg
         
