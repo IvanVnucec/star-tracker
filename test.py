@@ -10,10 +10,10 @@ def get_colors(n):
 def plot_2d_points(X, Y, x0=0.0, y0=0.0):
     fig = plt.figure()
     ax = fig.add_subplot()
-    #ax.set_aspect('equal')
     ax.scatter(X, Y, c=get_colors(len(X)))
     #ax.set_xlim([-100, 1100])
     #ax.set_ylim([-100, 2100])
+    ax.set_box_aspect(aspect=1)
     ax.grid(True)
 
 
@@ -22,6 +22,19 @@ def plot_3d_points(X, Y, Z):
     ax = fig.add_subplot(projection='3d')
     #ax.set_aspect('equal')
     ax.scatter(X, Y, Z, c=get_colors(len(X)))
+
+
+def gen_points(z=1.0, n=5):
+    cx = cy = 0.0
+    r = 1.0
+    
+    theta = np.linspace(0, 2*np.pi, num=n)
+    x = r * np.cos(theta) + cx
+    y = r * np.sin(theta) + cy
+    z = z * np.ones_like(x)
+
+    # n*3
+    return np.block([[x], [y], [z]]).T
 
 
 def to_hom(p):
@@ -55,13 +68,8 @@ K = np.array([
 
 P = K.dot(np.block([R, t]))
 
-XYZ = np.array([       # m
-    [ 0,  0,  1],
-    [ 1,  0,  1],
-    [ 0,  1,  1],
-    [-1,  0,  1],
-    [ 0, -1,  1],
-])
+XYZ = gen_points(z=1.0, n=20) # m
+XYZ = np.vstack((XYZ, gen_points(z=2.0, n=6))) # m
 
 XYZ1 = np.empty((XYZ.shape[0], 4))
 for i, xyz in enumerate(XYZ):
