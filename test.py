@@ -2,20 +2,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_2d_points(X, Y):
+def plot_2d_points(X, Y, colors=None):
     fig = plt.figure()
     ax = fig.add_subplot()
     #ax.set_aspect('equal')
-    ax.scatter(X, Y)
+    ax.scatter(X, Y, c=colors)
+    #ax.set_xlim([-100, 1100])
+    #ax.set_ylim([-100, 2100])
+    ax.grid(True)
     plt.show()
 
 
-def plot_3d_points(X, Y, Z):
+def plot_3d_points(X, Y, Z, colors=None):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     #ax.set_aspect('equal')
-    ax.scatter(X, Y, Z)
-    plt.show()
+    ax.scatter(X, Y, Z, c=colors)
 
 
 def generate_points(n=1000):
@@ -56,12 +58,14 @@ def get_camera_matrix(f, dx, dy, x0, y0, t, R):
     return P
 
 
+colors = np.array(['r', 'g', 'b'])
+
 # Internal parameters
 f  = 1e-3 # focal length in meters
 dx = 1e-6 # pixel dimension in meters
 dy = 1e-6 # pixel dimension in meters
-x0 = 1e-2 # CCD centre in meters
-y0 = 1e-2 # CCD centre in meters
+x0 = 1e+3 # CCD centre in pixels
+y0 = 1e+3 # CCD centre in pixels
 
 # External parameters
 R = np.eye(3)               # World to Camera coords 
@@ -72,7 +76,7 @@ P = get_camera_matrix(f, dx, dy, x0, y0, t, R)
 
 X, Y, Z = generate_points()
 
-#plot_3d_points(X, Y, Z)
+plot_3d_points(X, Y, Z, colors)
 
 XYZ1 = np.hstack((X, Y, Z, np.ones_like(X)))
 
@@ -83,4 +87,4 @@ for i, xyz1 in enumerate(XYZ1):
     xy1[i] = xy1_ / xy1_[-1]
 
 print(xy1)
-plot_2d_points(xy1[:,0], xy1[:,1])
+plot_2d_points(xy1[:,0], xy1[:,1], colors)
