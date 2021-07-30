@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 
+from catalog import get_stars
+
 
 def get_colors(n):
     np.random.seed(1337)
@@ -26,6 +28,9 @@ def plot_3d_points(X, Y, Z):
     ax = fig.add_subplot(projection='3d')
     ax.set_box_aspect(aspect=(1, 1, 1))
     ax.scatter(X, Y, Z, c=get_colors(len(X)))
+    ax.set_zlim3d(-1, 1)
+    ax.set_ylim3d(-1, 1)
+    ax.set_xlim3d(-1, 1)
 
 
 def gen_points(z=1.0, n=5):
@@ -72,8 +77,12 @@ K = np.array([
 
 P = K.dot(np.block([R, t]))
 
-XYZ = gen_points(z=1.0, n=20) # m
-XYZ = np.vstack((XYZ, gen_points(z=2.0, n=6))) # m
+XYZ = []
+RADEC = get_stars()
+for radec in RADEC:
+    XYZ.append(radec.get_xyz())
+
+XYZ = np.array(XYZ)
 
 XYZ1 = np.empty((XYZ.shape[0], 4))
 for i, xyz in enumerate(XYZ):
