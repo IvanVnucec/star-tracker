@@ -13,7 +13,9 @@ all: run
 run: $(CATALOG_FOLDER)
 	@python3 star_tracker.py
 
-download: $(CATALOG)
+download: $(CATALOG_FOLDER)
+
+$(CATALOG_FOLDER): $(CATALOG)
 
 $(CATALOG):
 	@./$(SCRIPTS_FOLDER)/download_catalog.sh

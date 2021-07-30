@@ -20,7 +20,7 @@ def plot_2d_points(X, Y, x0=0.0, y0=0.0):
 def plot_3d_points(X, Y, Z):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    #ax.set_aspect('equal')
+    ax.set_box_aspect(aspect=(1, 1, 1))
     ax.scatter(X, Y, Z, c=get_colors(len(X)))
 
 
