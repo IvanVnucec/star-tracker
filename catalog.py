@@ -6,15 +6,14 @@ About:
 from star import Star
 import numpy as np
 
-NUM_OF_STARS = 10_000
-ALL = 0
+NUM_OF_STARS = 1000
 CATALOG = 'data/catalog.dat'
 
 
 def _read_catalog():
     """Reads lines from catalog file."""
     with open(CATALOG) as f:
-        lines = [f.readline() for _ in range(NUM_OF_STARS)]
+        lines = f.readlines()
     
     return lines
 
@@ -35,8 +34,8 @@ def get_stars():
         right_asc_str = lines[i][152:164]    # deg
         declination_str = lines[i][165:177]  # deg
         
-        right_asc = np.rad2deg(float(right_asc_str))        # rad
-        declination = np.rad2deg(float(declination_str))    # rad
+        right_asc = np.deg2rad(float(right_asc_str))        # rad
+        declination = np.deg2rad(float(declination_str))    # rad
         stars.append(Star(right_asc, declination))
 
     return stars
