@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as patch
 
 
 def get_colors(n):
@@ -7,14 +8,17 @@ def get_colors(n):
     return np.random.rand(n, 3)
 
 
-def plot_2d_points(X, Y, x0=0.0, y0=0.0):
+def plot_2d_points(X, Y, x0, y0):
+    rect = patch.Rectangle((0, 0), 2*x0, 2*y0, linewidth=3, edgecolor='r', facecolor='none')
+    
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.scatter(X, Y, c=get_colors(len(X)))
-    #ax.set_xlim([-100, 1100])
-    #ax.set_ylim([-100, 2100])
     ax.set_box_aspect(aspect=1)
+    ax.set_xlim(0, 2*x0)
+    ax.set_ylim(0, 2*y0)
     ax.grid(True)
+    ax.add_patch(rect)
 
 
 def plot_3d_points(X, Y, Z):
@@ -87,6 +91,6 @@ X, Y, Z = XYZ.T
 plot_3d_points(X, Y, Z)
 
 Px, Py = PxPy.T
-plot_2d_points(Px, Py)
+plot_2d_points(Px, Py, x0, y0)
 
 plt.show()
