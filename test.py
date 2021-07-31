@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 
 from catalog import get_stars
+from camera import Camera
 
 
 def get_colors(n):
@@ -79,6 +80,8 @@ P = K.dot(np.block([R, t]))
 
 XYZ = []
 RADEC = get_stars()
+camera = Camera()
+RADEC = camera._get_stars_in_FOV(RADEC, (0, 3.14159/2))
 for radec in RADEC:
     XYZ.append(radec.get_xyz())
 
