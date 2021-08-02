@@ -40,3 +40,11 @@ def q_to_R(q):
         [R21, R22, R23],
         [R31, R32, R33]
     ])
+
+
+def to_hom(p):
+    return np.append(p, 1.0)
+
+
+def from_hom(ph):
+    return ph[0:2] / ph[-1]

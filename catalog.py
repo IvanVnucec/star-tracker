@@ -6,7 +6,7 @@ About:
 from star import Star
 import numpy as np
 
-NUM_OF_STARS = 1000
+NUM_OF_STARS = 10000
 CATALOG = 'data/catalog.dat'
 
 

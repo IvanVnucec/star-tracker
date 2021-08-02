@@ -4,6 +4,39 @@ import matplotlib.patches as patch
 
 from catalog import get_stars
 from camera import Camera
+from transformations import ra_dec_to_xyz
+
+
+def angle_between_vect(v1, v2):
+    uv1 = v1 / np.linalg.norm(v1)
+    uv2 = v2 / np.linalg.norm(v2)
+    dot_product = np.dot(uv1, uv2)
+    angle = np.arccos(dot_product)
+    return angle
+
+def set_camera_attitude(ra, dec):
+    n = np.array([1, 0, 0])
+    e = ra_dec_to_xyz(ra, dec)
+    theta = angle_between_vect(n, e)
+    if np.isclose(theta, 0.0):
+        return np.eye(3)
+
+    k = np.cross(n, e)
+    k_norm = np.linalg.norm(k)
+    # TODO: if we have n = -e
+    if np.isclose(k_norm, 0.0):
+        
+    else:
+        k = k / k_norm
+
+    kx, ky, kz = k
+    K = np.array([
+        [0, -kz, ky],
+        [kz, 0, -kx],
+        [-ky, kx, 0]
+    ])
+    R = np.eye(3) + np.sin(theta) * K + (1 - np.cos(theta) * K.dot(K))
+    return R
 
 
 def get_colors(n):
@@ -22,6 +55,8 @@ def plot_2d_points(X, Y, x0, y0):
     ax.set_ylim(0, 2*y0)
     ax.grid(True)
     ax.add_patch(rect)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
 
 
 def plot_3d_points(X, Y, Z):
@@ -32,6 +67,9 @@ def plot_3d_points(X, Y, Z):
     ax.set_zlim3d(-1, 1)
     ax.set_ylim3d(-1, 1)
     ax.set_xlim3d(-1, 1)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
 
 
 def gen_points(z=1.0, n=5):
@@ -55,13 +93,15 @@ def from_hom(ph):
     return ph[0:2] / ph[-1]
 
 
-
+c_ra, c_dec = np.pi, 0
 f = 1e-3                # m
 px = py = 1e-2          # m
 mx = my = 1e6           # pixels/m
 s = 0.0                 # skew
 C = np.zeros((3, 1))    # m
-R = np.eye(3)
+R = set_camera_attitude(c_ra, c_dec)
+print(R.dot(np.array([1, 0, 0])))
+exit()
 
 t = -R.dot(C)
 
@@ -81,7 +121,7 @@ P = K.dot(np.block([R, t]))
 XYZ = []
 RADEC = get_stars()
 camera = Camera()
-RADEC = camera._get_stars_in_FOV(RADEC, (0, 3.14159/2))
+RADEC = camera._get_stars_in_FOV(RADEC, (c_ra, c_dec))
 for radec in RADEC:
     XYZ.append(radec.get_xyz())
 

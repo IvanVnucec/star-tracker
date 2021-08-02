@@ -19,35 +19,32 @@ class Camera:
             v0 (float): vertical origin of the image plane in meters
         """
         # camera parameters
-        FOV = 20        # deg
-        f = 50e-3       # m
-        rhou = 1.4e-6   # sizes of each pixels in m
-        rhov = 1.4e-6   # sizes of each pixels in m
-        u0 = 0.01       # m
-        v0 = 0.01       # m
+        FOV = 90        # deg
+        f = 1e-3                # m
+        px = py = 1e-2          # m
+        mx = my = 1e6           # pixels/m
+        s = 0.0                 # skew
+        C = np.zeros((3, 1))    # m
         
         self.FOV = FOV
         self.f = f
-        self.rhou = rhou
-        self.rhov = rhov
-        self.u0 = u0
-        self.v0 = v0
+        self.px = px
+        self.py = py
+        self.mx = mx
+        self.my = my
+        self.s  = s
+        self.C  = C
 
-        # camera coordiantes in intertial frame
-        self.tc = np.array([0.0, 0.0, 0.0])
+        ax = f * mx     # pixels
+        ay = f * my     # pixels
+        x0 = mx * px    # pixels
+        y0 = my * py    # pixels
 
-        # intrinsic camera parameters
-        Maff = np.array([
-            [1/rhou, 0,    u0],
-            [0,   -1/rhov, v0],
-            [0,      0,     1]])
-
-        Mproj = np.array([
-            [f, 0, 0, 0],
-            [0, f, 0, 0],
-            [0, 0, 1, 0]])
-
-        self.Mint = Maff.dot(Mproj)
+        self.K = np.array([
+            [ax, s, x0],
+            [0, ay, y0],
+            [0, 0,   1]
+        ])
 
     def _get_stars_in_FOV(self, stars, orientation):
         """Return only the stars that the star tracker could see.
@@ -101,24 +98,16 @@ class Camera:
         q = np.vstack((e, 1.0))
         q = q / np.linalg.norm(q)
 
-        Rc = tr.q_to_R(q)  # quaternion to rot. matrix
+        R = tr.q_to_R(q)  # quaternion to rot. matrix
+        print(R)
+        t = -R.dot(self.C)
+        P = self.K.dot(np.block([R, t]))
 
-        Mext11 = Rc.T
-        Mext12 = -1 * Rc.T.dot(self.tc).reshape(3, 1)
-        Mext21 = np.zeros((1, 3))
-        Mext22 = 1.0
-        Mext = np.block([
-            [Mext11, Mext12],
-            [Mext21, Mext22]])
-
-        M = self.Mint.dot(Mext)
-
-        # TODO: in the end should be [u, v, 1.0] but we are not getting number 1.0
         stars_2d = np.empty((len(stars_in_fov), 3))
         for i, star in enumerate(stars_in_fov):
             U, V, W = star.get_xyz()
             point = np.array([U, V, W, 1])
-            proj = M.dot(point)
+            proj = P.dot(point)
             stars_2d[i] = proj
 
         return stars_2d
