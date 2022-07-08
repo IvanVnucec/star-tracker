@@ -1,83 +1,61 @@
 #include "catalog.hpp"
 #include <string>
 #include <fstream>
-#include <vector>
-#include <utility>
-#include <stdexcept>
-#include <sstream>
 
 namespace Catalog
 {
 
+    static std::vector<std::string> split(const std::string &s, char seperator);
+
     Catalog::Catalog(std::string path)
     {
-        m_data = read_csv(path);
+        m_ra_dec = read_csv(path);
         // TODO: handle data
     }
 
     // Reads a CSV file into a vector of <string, vector<int>> pairs where
     // each pair represents <column name, column values>
-    Data Catalog::read_csv(std::string path)
+    RaDec Catalog::read_csv(std::string path)
     {
-        // Create a vector of <string, int vector> pairs to store the result
-        Data result;
+        RaDec result;
+        std::ifstream file(path);
+        std::string line, colname;
 
-        // Create an input filestream
-        std::ifstream myFile(path);
-
-        // Make sure the file is open
-        if (!myFile.is_open())
+        if (! file.is_open())
             throw std::runtime_error("Could not open file");
 
-        // Helper vars
-        std::string line, colname;
-        int val;
-
-        // Read the column names
-        if (myFile.good())
-        {
-            // Extract the first line in the file
-            std::getline(myFile, line);
-
-            // Create a stringstream from line
-            std::stringstream ss(line);
-
-            // Extract each column name
-            while (std::getline(ss, colname, ','))
-            {
-                // Initialize and add <colname, int vector> pairs to result
-                result.push_back({colname, std::vector<int>{}});
-            }
-        }
+        // skip csv header
+        std::getline(file, line);
 
         // Read data, line by line
-        while (std::getline(myFile, line))
+        while (std::getline(file, line))
         {
-            // Create a stringstream of the current line
-            std::stringstream ss(line);
-
-            // Keep track of the current column index
-            int colIdx = 0;
-
-            // Extract each integer
-            while (ss >> val)
-            {
-                // Add the current integer to the 'colIdx' column's values vector
-                result.at(colIdx).second.push_back(val);
-
-                // If the next token is a comma, ignore it and move on
-                if (ss.peek() == ',')
-                    ss.ignore();
-
-                // Increment the column index
-                colIdx++;
-            }
+            std::vector<std::string> cols = split(line, ',');
+            result["ra"].push_back(std::stod(cols[7]));
+            result["dec"].push_back(std::stod(cols[8]));
         }
 
         // Close file
-        myFile.close();
+        file.close();
 
         return result;
+    }
+
+    static std::vector<std::string> split(const std::string &s, char seperator)
+    {
+        std::vector<std::string> output;
+        std::string::size_type prev_pos = 0, pos = 0;
+
+        while ((pos = s.find(seperator, pos)) != std::string::npos)
+        {
+            std::string substring(s.substr(prev_pos, pos - prev_pos));
+            output.push_back(substring);
+            prev_pos = ++pos;
+        }
+
+        output.push_back(s.substr(prev_pos, pos - prev_pos)); // Last word
+
+        return output;
     }
 
 } // namespace Catalog

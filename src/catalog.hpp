@@ -2,11 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Catalog
 {
 
-    using Data = std::vector<std::pair<std::string, std::vector<int>>>;
+    using RaDec = std::unordered_map<std::string, std::vector<double>>;
 
     class Catalog
     {
@@ -15,8 +16,8 @@ namespace Catalog
         Catalog(std::string path);
 
     private:
-        Data m_data;
-        Data read_csv(std::string path);
+        RaDec m_ra_dec;
+        RaDec read_csv(std::string path);
     };
 
 }
