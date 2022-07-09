@@ -2,22 +2,21 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include "star.hpp"
 
 namespace Catalog
 {
-
-    using RaDec = std::unordered_map<std::string, std::vector<double>>;
 
     class Catalog
     {
 
     public:
         Catalog(std::string path);
+        std::vector<Star::Star> get_stars();
 
     private:
-        RaDec m_ra_dec;
-        RaDec read_csv(std::string path);
+        std::vector<Star::Star> m_stars;
+        std::vector<Star::Star> read_csv(std::string path);
     };
 
 }

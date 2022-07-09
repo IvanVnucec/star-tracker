@@ -1,6 +1,7 @@
 #include "catalog.hpp"
 #include <string>
 #include <fstream>
+#include <iostream>
 
 namespace Catalog
 {
@@ -9,15 +10,15 @@ namespace Catalog
 
     Catalog::Catalog(std::string path)
     {
-        m_ra_dec = read_csv(path);
+        m_stars = read_csv(path);
         // TODO: handle data
     }
 
     // Reads a CSV file into a vector of <string, vector<int>> pairs where
     // each pair represents <column name, column values>
-    RaDec Catalog::read_csv(std::string path)
+    std::vector<Star::Star> Catalog::read_csv(std::string path)
     {
-        RaDec result;
+        std::vector<Star::Star> stars;
         std::ifstream file(path);
         std::string line, colname;
 
@@ -31,14 +32,23 @@ namespace Catalog
         while (std::getline(file, line))
         {
             std::vector<std::string> cols = split(line, ',');
-            result["ra"].push_back(std::stod(cols[7]));
-            result["dec"].push_back(std::stod(cols[8]));
+            double ra  = std::stod(cols[7]);
+            double dec = std::stod(cols[8]);
+            double absmag = std::stod(cols[14]);
+
+            auto star = Star::Star(ra, dec, absmag);
+            stars.push_back(star);
         }
 
         // Close file
         file.close();
 
-        return result;
+        return stars;
+    }
+
+    std::vector<Star::Star> Catalog::get_stars()
+    {
+        return m_stars;
     }
 
     static std::vector<std::string> split(const std::string &s, char seperator)
