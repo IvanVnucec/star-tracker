@@ -1,12 +1,15 @@
 #include "minunit.h"
 #include <memory>
 #include <vector>
+#include <filesystem>
 #include "tracker/catalog.hpp"
 
+static const auto catalog_path = 
+	std::filesystem::current_path() / "../../../../libs/tracker/star-catalog/hygdata_v3.csv"; 
 static std::shared_ptr<Catalog> catalog;
 
 void test_setup(void) {
-	catalog = std::make_shared<Catalog>("/home/ivan/Desktop/star-tracker/star-catalog/hygdata_v3.csv");
+	catalog = std::make_shared<Catalog>(catalog_path);
 }
 
 void test_teardown(void) {
