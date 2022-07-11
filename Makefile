@@ -14,7 +14,7 @@ build:
 run: build
 	./build/src/simulation
 
-test:
+test: build
 	cmake -E chdir build ctest
 
 clean:

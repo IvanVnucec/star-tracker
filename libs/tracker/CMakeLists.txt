@@ -23,5 +23,6 @@ target_compile_features(${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
+    enable_testing()
 	add_subdirectory(tests)
 endif()
