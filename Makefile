@@ -1,20 +1,21 @@
-.PHONY: all setup build run test clean
+.PHONY: all setup cmake build run test clean
 
 all: build
 
 setup:
 	sudo apt-get install -y libpng-dev
-	mkdir build
-	cd build && cmake ..
+
+cmake:
+	cmake -B build
 
 build:
-	cd build && make
+	cmake --build build
 
 run: build
-	./build/src/star-tracker
+	./build/src/simulation
 
-test: build
-	cd build && ctest
+test:
+	cmake -E chdir build ctest
 
 clean:
 	cd build && make clean

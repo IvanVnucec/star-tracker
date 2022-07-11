@@ -3,15 +3,13 @@ project(simulation)
 
 set(SOURCE_FILES 
     main.cpp
-    catalog.cpp
-    star.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
-		libs::lib1
+		libs::tracker
         -lX11
         -lGL
         -lpthread
