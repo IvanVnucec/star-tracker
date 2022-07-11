@@ -1,7 +1,5 @@
 #pragma once
 
-namespace Star {
-
 class Star
 {
 private:
@@ -15,5 +13,3 @@ public:
     double dec() const;
     double absmag() const;
 };
-
-}

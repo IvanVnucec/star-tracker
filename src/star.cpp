@@ -1,7 +1,5 @@
 #include "star.hpp"
 
-namespace Star {
-
 Star::Star(double ra, double dec, double absmag)
 {
     m_ra = ra;
@@ -22,6 +20,4 @@ double Star::dec() const
 double Star::absmag() const
 {
     return m_absmag;
-}
-
 }

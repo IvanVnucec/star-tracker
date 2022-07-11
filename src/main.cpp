@@ -3,7 +3,7 @@
 
 int main()
 {
-	Catalog::Catalog catalog("/home/ivan/Desktop/star-tracker/star-catalog/hygdata_v3.csv");
+	Catalog catalog("/home/ivan/Desktop/star-tracker/star-catalog/hygdata_v3.csv");
 	const auto stars = catalog.get_stars();
 
 	int i = 0;
