@@ -7,7 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-Wall -Werror -O0 -ggdb -Wno-unknown-pragmas)
 
 add_subdirectory(src)
-target_include_directories(star-tracker PRIVATE libs)
+add_subdirectory(libs)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
+project(simulation)
 
 set(SOURCE_FILES 
     main.cpp
@@ -6,6 +7,14 @@ set(SOURCE_FILES
     star.cpp
 )
 
-add_executable(star-tracker ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(star-tracker -lX11 -lGL -lpthread -lpng -lstdc++fs)
+target_link_libraries(${PROJECT_NAME}
+	PRIVATE
+		libs::lib1
+        -lX11
+        -lGL
+        -lpthread
+        -lpng
+        -lstdc++fs
+)
