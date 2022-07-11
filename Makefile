@@ -3,7 +3,7 @@
 all: build
 
 setup:
-	sudo apt-get install -y libpng-dev
+	sudo apt-get install -y libpng-dev libgl1-mesa-dev
 
 cmake:
 	cmake -B build

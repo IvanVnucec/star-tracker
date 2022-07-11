@@ -1,0 +1,22 @@
+name: Test
+
+on: [workflow_dispatch, push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: make setup
+
+    - name: Configure CMake
+      run: make cmake
+
+    - name: Build
+      run: make build
+
+    - name: Test
+      run: make test
