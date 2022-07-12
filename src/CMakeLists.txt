@@ -5,6 +5,7 @@ set(TRACKER_APP ${PROJECT_NAME})
 set(TRACKER_LIB tracker)
 
 add_library(${TRACKER_LIB}
+	camera.cpp
 	catalog.cpp
 	star.cpp
 )
