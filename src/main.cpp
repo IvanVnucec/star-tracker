@@ -1,11 +1,11 @@
 #include <iostream>
 #include <filesystem>
-#include "tracker/catalog.hpp"
+#include "catalog.hpp"
 
 int main()
 {
 	const auto catalog_path = 
-		std::filesystem::current_path() / "libs/tracker/star-catalog/hygdata_v3.csv"; 
+		std::filesystem::current_path() / "catalog/hygdata_v3.csv"; 
 
 	Catalog catalog(catalog_path);
 	const auto stars = catalog.get_stars();
