@@ -20,7 +20,7 @@ std::vector<Star> Catalog::read_csv(std::string path)
     std::string line, colname;
 
     if (!file.is_open())
-        throw std::runtime_error("Could not open file");
+        throw std::runtime_error("Could not open a file at " + path);
 
     // skip csv header
     std::getline(file, line);
