@@ -43,4 +43,5 @@ target_compile_features(${TRACKER_LIB}
 
 target_link_libraries(${TRACKER_LIB}
 	PRIVATE
+		Eigen3::Eigen3
 )
