@@ -2,10 +2,10 @@
 #include <memory>
 #include <vector>
 #include <filesystem>
-#include "catalog.hpp"
+#include <tracker/catalog.hpp>
 
 static const auto catalog_path = 
-	std::filesystem::current_path() / "../../catalog/hygdata_v3.csv"; 
+	std::filesystem::current_path() / "../../../../libs/tracker/catalog/hygdata_v3.csv"; 
 static std::shared_ptr<Catalog> catalog;
 
 void test_setup(void) {

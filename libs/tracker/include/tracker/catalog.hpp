@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "star.hpp"
+#include <tracker/star.hpp>
 
 class Catalog
 {

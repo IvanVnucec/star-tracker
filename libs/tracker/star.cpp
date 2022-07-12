@@ -1,4 +1,4 @@
-#include "star.hpp"
+#include <tracker/star.hpp>
 
 Star::Star(double ra, double dec, double absmag)
 {
