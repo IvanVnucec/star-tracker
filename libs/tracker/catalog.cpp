@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 
 static std::vector<std::string> split(const std::string &s, char seperator);
 
@@ -31,6 +32,10 @@ std::vector<Star> Catalog::read_csv(const std::string& path)
         double ra = std::stod(cols[7]);
         double dec = std::stod(cols[8]);
         double absmag = std::stod(cols[14]);
+
+        // convert ra and dec to radians
+        ra  *= 180.0 / M_PI;
+        dec *= 180.0 / M_PI;
 
         auto star = Star(ra, dec, absmag);
         stars.push_back(star);
