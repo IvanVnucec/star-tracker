@@ -5,15 +5,14 @@
 
 static std::vector<std::string> split(const std::string &s, char seperator);
 
-Catalog::Catalog(std::string path)
+Catalog::Catalog(const std::string& path) :
+m_stars{ read_csv(path) }
 {
-    m_stars = read_csv(path);
-    // TODO: handle data
 }
 
 // Reads a CSV file into a vector of <string, vector<int>> pairs where
 // each pair represents <column name, column values>
-std::vector<Star> Catalog::read_csv(std::string path)
+std::vector<Star> Catalog::read_csv(const std::string& path)
 {
     std::vector<Star> stars;
     std::ifstream file(path);
