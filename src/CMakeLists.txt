@@ -14,9 +14,5 @@ target_compile_features(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
         tracker
-        -lX11
-        -lGL
-        -lpthread
-        -lpng
-        -lstdc++fs
+        olcPixelGameEngine
 )
