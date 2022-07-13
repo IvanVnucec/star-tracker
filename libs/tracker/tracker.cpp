@@ -1,14 +1,16 @@
 #include <tracker/tracker.hpp>
 #include <filesystem>
 
-static const std::string CATALOG_PATH = std::filesystem::current_path() / "catalog/hygdata_v3.csv";
-
-Tracker::Tracker(const Orientation& orientation) :
+Tracker::Tracker(const Orientation& orientation, const std::string& catalog_path) :
 m_orientation{ orientation },
-m_catalog{ Catalog(CATALOG_PATH) } 
+m_catalog{ Catalog(catalog_path) } 
 {
 }
 
 Orientation Tracker::get_orientation() {
     return m_orientation;
+}
+
+void Tracker::set_orientation(const Orientation& orientation) {
+    m_orientation = orientation;
 }

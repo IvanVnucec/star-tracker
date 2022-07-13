@@ -11,6 +11,7 @@ private:
     Camera m_camera;
 
 public:
-    Tracker(const Orientation& orientation);
+    Tracker(const Orientation& orientation, const std::string& catalog_path);
     Orientation get_orientation();
+    void set_orientation(const Orientation& orientation);
 };
