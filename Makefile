@@ -3,10 +3,10 @@
 all: build
 
 setup:
-	sudo apt-get install -y ninja-build libpng-dev libgl1-mesa-dev
+	sudo apt-get install -y libpng-dev libgl1-mesa-dev
 
 cmake:
-	cmake -GNinja -B build
+	cmake -B build
 
 build:
 	cmake --build build
