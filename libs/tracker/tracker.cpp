@@ -1,4 +1,5 @@
 #include <tracker/tracker.hpp>
+#include <tracker/orientation.hpp>
 #include <filesystem>
 
 Tracker::Tracker(const Orientation& orientation, const std::string& catalog_path) :
