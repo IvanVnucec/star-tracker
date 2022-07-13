@@ -4,7 +4,9 @@ project(tracker)
 add_library(${PROJECT_NAME}
 	camera.cpp
 	catalog.cpp
+	orientation.cpp
 	star.cpp
+	tracker.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
