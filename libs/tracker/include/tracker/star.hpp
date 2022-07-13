@@ -1,10 +1,11 @@
 #pragma once
 
+#include <tracker/orientation.hpp>
+
 class Star
 {
 private:
-    double m_ra;
-    double m_dec;
+    Orientation m_orientation;
     double m_absmag;
  
 public:
