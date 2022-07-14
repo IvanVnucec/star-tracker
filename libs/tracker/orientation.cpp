@@ -15,11 +15,11 @@ m_xyz{ xyz }
 }
 
 // ra_dec in radians
-RaDec Orientation::get_ra_dec() const {
+RaDec Orientation::ra_dec() const {
     return m_ra_dec;
 }
 
-XYZ Orientation::get_xyz() const {
+XYZ Orientation::xyz() const {
     return m_xyz;
 }
 

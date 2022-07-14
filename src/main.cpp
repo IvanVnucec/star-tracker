@@ -1,21 +1,21 @@
 #include <iostream>
 #include <filesystem>
-#include <tracker/catalog.hpp>
+#include <tracker/tracker.hpp>
 
 int main()
 {
-	const auto catalog_path = 
+ 	const auto catalog_path = 
 		std::filesystem::current_path() / "libs/tracker/catalog/hygdata_v3.csv"; 
 
-	Catalog catalog(catalog_path);
-	const auto stars = catalog.get_stars();
+	Tracker tracker(RaDec(0, 0), catalog_path);
+	const auto stars = tracker.get_stars();
 
 	int i = 0;
 	for (const auto& star : stars)
 	{
 		std::cout << i++ << " " 
-		<< star.ra() << " " 
-		<< star.dec() << " " 
+		<< star.ra_dec()[0] << " " 
+		<< star.ra_dec()[1] << " " 
 		<< star.absmag() << "\n";
 	}
 

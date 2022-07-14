@@ -17,6 +17,9 @@ public:
     Orientation(const RaDec& ra_dec);
     Orientation(const XYZ& xyz);
 
-    RaDec get_ra_dec() const;
-    XYZ get_xyz() const;
+    RaDec ra_dec() const;
+    XYZ   xyz() const;
+
+    template <typename T>
+    void set_orientation(const T& ori) { *this = Orientation(ori); }
 };

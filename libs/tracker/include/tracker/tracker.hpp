@@ -4,14 +4,8 @@
 #include <tracker/catalog.hpp>
 #include <tracker/orientation.hpp>
 
-class Tracker {
+class Tracker : public Orientation, public Catalog, public Camera {
 private:
-    Orientation m_orientation;
-    Catalog m_catalog;
-    Camera m_camera;
-
 public:
-    Tracker(const Orientation& orientation, const std::string& catalog_path);
-    Orientation get_orientation();
-    void set_orientation(const Orientation& orientation);
+    Tracker(const RaDec& ra_dec, const std::string& catalog_path);
 };
