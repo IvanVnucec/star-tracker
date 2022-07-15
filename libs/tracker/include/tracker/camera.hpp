@@ -15,7 +15,7 @@ private:
 public:
     Camera();
     void capture(const std::vector<Star>& stars);
-    CameraCCD camera_ccd();
-    unsigned camera_pixel_w() const;
-    unsigned camera_pixel_h() const;
+    CameraCCD ccd() const;
+    unsigned pixel_w() const;
+    unsigned pixel_h() const;
 };
