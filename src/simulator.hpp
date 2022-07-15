@@ -3,17 +3,21 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 #include <tracker/tracker.hpp>
+#include <memory>
 
 class Simulator : public olc::PixelGameEngine
 {
-public:
-	Simulator(const Tracker& tracker)
-	{
-		sAppName = "Simulator";
-        Construct(tracker.camera_pixel_w(), tracker.camera_pixel_h(), 1, 1);
-	}
+private:
+	std::shared_ptr<Tracker> m_tracker;
 
 public:
+	Simulator(std::shared_ptr<Tracker>& tracker) :
+	m_tracker{ tracker }
+	{
+		sAppName = "Simulator";
+        Construct(tracker->camera_pixel_w(), tracker->camera_pixel_h(), 1, 1);
+	}
+
     void start() 
     {
         PixelGameEngine::Start();
@@ -27,9 +31,13 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
+		//m_tracker->capture();
+		CameraCCD ccd = m_tracker->camera_ccd();
+
 		for (int x = 0; x < ScreenWidth(); x++) {
 			for (int y = 0; y < ScreenHeight(); y++) {
-				Draw(x, y, olc::Pixel(rand() % 255, rand() % 255, rand()% 255));	
+				olc::Pixel p = PixelLerp(olc::BLACK, olc::WHITE, ccd(x, y));
+				Draw(x, y, p);
             }
         }
 
