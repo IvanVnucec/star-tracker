@@ -17,11 +17,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
 	INTERFACE
-        -lX11
-        -lGL
-        -lglut
         -lpthread
-        -lpng
         -lstdc++fs
         -luser32
         -lgdi32

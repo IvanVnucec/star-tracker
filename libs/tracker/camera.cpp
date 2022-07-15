@@ -14,8 +14,14 @@ void Camera::capture(const std::vector<Star>& stars)
     m_ccd = MatrixXd::Zero(m_pixel_w, m_pixel_h);
 }
 
-CameraCCD Camera::get_ccd()
+CameraCCD Camera::camera_ccd()
 {
     return m_ccd;
 }
 
+unsigned Camera::camera_pixel_w() const {
+    return m_pixel_w;
+}
+unsigned Camera::camera_pixel_h() const {
+    return m_pixel_h;
+}

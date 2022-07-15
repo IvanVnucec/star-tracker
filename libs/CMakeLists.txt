@@ -4,4 +4,4 @@ endif()
 
 add_subdirectory(tracker)
 add_subdirectory(Eigen3)
-#add_subdirectory(olcPixelGameEngine)
+add_subdirectory(olcPixelGameEngine)

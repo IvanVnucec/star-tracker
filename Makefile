@@ -12,7 +12,7 @@ build:
 	cmake --build build
 
 run: build
-	./build/src/simulation
+	./build/src/simulator
 
 test: build
 	cmake -E chdir build ctest
