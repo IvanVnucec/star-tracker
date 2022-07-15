@@ -2,7 +2,6 @@ project(tests)
 
 set(COMMON_LIBS
     tracker
-    -lrt
     -lm
 )
 
