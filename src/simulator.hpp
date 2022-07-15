@@ -15,7 +15,7 @@ public:
 	m_tracker{ tracker }
 	{
 		sAppName = "Simulator";
-        Construct(tracker->camera().pixel_w(), tracker->camera().pixel_h(), 1, 1);
+        Construct(tracker->camera_ccd_w(), tracker->camera_ccd_h(), 1, 1);
 	}
 
     void start() 
@@ -31,8 +31,7 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		//m_tracker->capture();
-		CameraCCD ccd = m_tracker->camera().ccd();
+		CameraCCD ccd = m_tracker->camera_capture();
 
 		for (int x = 0; x < ScreenWidth(); x++) {
 			for (int y = 0; y < ScreenHeight(); y++) {

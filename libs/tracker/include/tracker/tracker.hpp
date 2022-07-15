@@ -11,5 +11,7 @@ private:
 
 public:
     Tracker(const RaDec& ra_dec, const std::string& catalog_path);
-    Camera camera();
+    CameraCCD camera_capture();
+    unsigned camera_ccd_w();
+    unsigned camera_ccd_h();
 };

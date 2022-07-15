@@ -9,6 +9,18 @@ m_camera{ Camera() }
 {
 }
 
-Camera Tracker::camera() {
-    return m_camera;
+CameraCCD Tracker::camera_capture()
+{
+    m_camera.capture(m_catalog.get_stars());
+    return m_camera.ccd();
+}
+
+unsigned Tracker::camera_ccd_w()
+{
+    return m_camera.pixel_w();
+}
+
+unsigned Tracker::camera_ccd_h()
+{
+    return m_camera.pixel_h();
 }
