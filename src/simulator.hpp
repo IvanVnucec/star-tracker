@@ -31,6 +31,10 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
+		// press ESC key to exit
+		if (GetKey(olc::ESCAPE).bPressed)
+	    	return false;
+
 		CameraCCD ccd = m_tracker->camera_capture();
 
 		for (int x = 0; x < ScreenWidth(); x++) {
