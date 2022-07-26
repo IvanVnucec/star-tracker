@@ -23,6 +23,10 @@ XYZ Orientation::xyz() const {
     return m_xyz;
 }
 
+Orientation Orientation::ori() const {
+    return *this;
+}
+
 RaDec Orientation::calc_ra_dec(const XYZ& xyz) {
     const double x = xyz[0];
     const double y = xyz[1];
@@ -39,8 +43,8 @@ XYZ Orientation::calc_xyz(const RaDec& ra_dec) {
     const double ra  = ra_dec[0]; 
     const double dec = ra_dec[1];
  
-    const double x = std::cos(ra) * std::cos(dec);
-    const double y = std::sin(ra) * std::cos(dec);
+    const double x = std::cos(dec) * std::cos(ra);
+    const double y = std::cos(dec) * std::sin(ra);
     const double z = std::sin(dec);
 
     return XYZ(x, y, z);

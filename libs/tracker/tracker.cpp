@@ -11,7 +11,7 @@ m_camera{ Camera() }
 
 CameraCCD Tracker::camera_capture()
 {
-    m_camera.capture(m_catalog.get_stars());
+    m_camera.capture(this->ori(), m_catalog.get_stars());
     return m_camera.ccd();
 }
 

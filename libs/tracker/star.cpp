@@ -1,8 +1,8 @@
 #include <tracker/star.hpp>
 #include <tracker/orientation.hpp>
 
-Star::Star(double ra, double dec, double absmag) :
-Orientation(RaDec(ra, dec)),
+Star::Star(RaDec ra_dec, double absmag) :
+Orientation(ra_dec),
 m_absmag{ absmag }
 {
 }

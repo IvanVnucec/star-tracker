@@ -1,4 +1,5 @@
 #include <tracker/catalog.hpp>
+#include <tracker/utils.hpp>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -29,15 +30,11 @@ std::vector<Star> Catalog::read_csv(const std::string& path)
     while (std::getline(file, line))
     {
         std::vector<std::string> cols = split(line, ',');
-        double ra = std::stod(cols[7]);
-        double dec = std::stod(cols[8]);
+        double ra = Utils::deg_to_rad(std::stod(cols[7]));
+        double dec = Utils::deg_to_rad(std::stod(cols[8]));
         double absmag = std::stod(cols[14]);
 
-        // convert ra and dec to radians
-        ra  *= 180.0 / M_PI;
-        dec *= 180.0 / M_PI;
-
-        auto star = Star(ra, dec, absmag);
+        auto star = Star(RaDec(ra, dec), absmag);
         stars.push_back(star);
     }
 

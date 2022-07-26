@@ -35,8 +35,8 @@ public:
 
 		for (int x = 0; x < ScreenWidth(); x++) {
 			for (int y = 0; y < ScreenHeight(); y++) {
-				olc::Pixel p = PixelLerp(olc::BLACK, olc::WHITE, ccd(x, y));
-				Draw(x, y, p);
+				//olc::Pixel p = PixelLerp(olc::BLACK, olc::WHITE, ccd(x, y));
+				//Draw(x, y, p);
             }
         }
 

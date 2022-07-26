@@ -1,5 +1,5 @@
 #include "minunit.h"
-#include "utils.hpp"
+#include "helper.hpp"
 #include <tracker/tracker.hpp>
 
 void test_setup(void) {
@@ -9,7 +9,7 @@ void test_teardown(void) {
 }
 
 MU_TEST(test_tracker_constructor) {
-	Tracker tracker(RaDec(0, 0), Utils::get_catalog_path());
+	Tracker tracker(RaDec(0, 0), Helper::get_catalog_path());
 }
 
 MU_TEST_SUITE(test_suite) {

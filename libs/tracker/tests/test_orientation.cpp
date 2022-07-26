@@ -1,5 +1,6 @@
 #include "minunit.h"
 #include <tracker/orientation.hpp>
+#include <cmath>
 
 void test_setup(void) {
 }
@@ -52,6 +53,44 @@ MU_TEST(test_orientation_set_orientation_xyz) {
 	mu_check(xyz_set == xyz_get);
 }
 
+MU_TEST(test_orientation_known_values) {
+    Orientation orientation(RaDec(0.0, 0.0));
+    XYZ xyz = orientation.xyz();
+	mu_assert_double_eq(1.0, xyz[0]);
+	mu_assert_double_eq(0.0, xyz[1]);
+	mu_assert_double_eq(0.0, xyz[2]);
+
+	orientation = RaDec(M_PI_2, 0.0);
+    xyz = orientation.xyz();
+	mu_assert_double_eq(0.0, xyz[0]);
+	mu_assert_double_eq(1.0, xyz[1]);
+	mu_assert_double_eq(0.0, xyz[2]);
+
+	orientation = RaDec(M_PI, 0.0);
+    xyz = orientation.xyz();
+	mu_assert_double_eq(-1.0, xyz[0]);
+	mu_assert_double_eq(0.0, xyz[1]);
+	mu_assert_double_eq(0.0, xyz[2]);
+
+	orientation = RaDec(M_PI + M_PI_2, 0.0);
+    xyz = orientation.xyz();
+	mu_assert_double_eq(0.0, xyz[0]);
+	mu_assert_double_eq(-1.0, xyz[1]);
+	mu_assert_double_eq(0.0, xyz[2]);
+
+	orientation = RaDec(0.0, M_PI_2);
+    xyz = orientation.xyz();
+	mu_assert_double_eq(0.0, xyz[0]);
+	mu_assert_double_eq(0.0, xyz[1]);
+	mu_assert_double_eq(1.0, xyz[2]);
+
+	orientation = RaDec(0.0, -M_PI_2);
+    xyz = orientation.xyz();
+	mu_assert_double_eq(0.0, xyz[0]);
+	mu_assert_double_eq(0.0, xyz[1]);
+	mu_assert_double_eq(-1.0, xyz[2]);
+}
+
 MU_TEST_SUITE(test_suite) {
 	MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
 
@@ -59,6 +98,7 @@ MU_TEST_SUITE(test_suite) {
 	MU_RUN_TEST(test_orientation_constr_xyz);
 	MU_RUN_TEST(test_orientation_set_orientation_ra_dec);
 	MU_RUN_TEST(test_orientation_set_orientation_xyz);
+	MU_RUN_TEST(test_orientation_known_values);
 }
 
 int main(int argc, char *argv[]) {

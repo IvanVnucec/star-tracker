@@ -8,6 +8,6 @@ private:
     double m_absmag;
  
 public:
-    Star(double ra, double dec, double absmag);
+    Star(RaDec ra_dec, double absmag);
     double absmag() const;
 };

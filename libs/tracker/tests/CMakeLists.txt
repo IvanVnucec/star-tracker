@@ -6,6 +6,11 @@ set(COMMON_LIBS
     -lm
 )
 
+add_executable(test_camera test_camera.cpp)
+target_compile_features(test_camera PRIVATE cxx_std_17)
+target_link_libraries(test_camera PRIVATE ${COMMON_LIBS})
+add_test(NAME test_camera COMMAND test_camera)
+
 add_executable(test_catalog test_catalog.cpp)
 target_compile_features(test_catalog PRIVATE cxx_std_17)
 target_link_libraries(test_catalog PRIVATE ${COMMON_LIBS})
