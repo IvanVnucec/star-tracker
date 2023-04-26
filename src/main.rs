@@ -7,12 +7,27 @@ const WIDTH: usize = 500;
 const HEIGHT: usize = 500;
 const STARS_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
 
-type Record = HashMap<String, String>;
+struct Record {
+    ra: f64,
+    dec: f64,
+    absmag: f64,
+}
 
 fn main() {
     println!("Loading the Star catalog...");
     let mut rdr = csv::Reader::from_path(STARS_CATALOG_PATH).unwrap();
-    let records: Vec<Record> = rdr.deserialize().map(Result::unwrap).collect();
+    let records: Vec<Record> = rdr
+        .deserialize()
+        .map(|result| {
+            let r: HashMap<String, String> = result.unwrap();
+
+            Record {
+                ra: r["ra"].parse().unwrap(),
+                dec: r["dec"].parse().unwrap(),
+                absmag: r["absmag"].parse().unwrap(),
+            }
+        })
+        .collect();
     println!("Done. Number of catalog items: {}", records.len());
 
     let canvas = DMatrix::repeat(HEIGHT, WIDTH, 1000);
