@@ -17,7 +17,7 @@ fn main() {
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         window
-            .update_with_buffer(&canvas.as_slice(), WIDTH, HEIGHT)
+            .update_with_buffer(canvas.as_slice(), WIDTH, HEIGHT)
             .unwrap();
     }
 }
