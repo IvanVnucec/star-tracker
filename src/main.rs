@@ -13,27 +13,26 @@ struct Star {
     absmag: f64,
 }
 
-fn load_stars_from_catalog(catalog_path: &str) -> Vec<Star> {
-    let mut rdr = csv::Reader::from_path(STARS_CATALOG_PATH).unwrap();
-    let stars: Vec<Star> = rdr
+fn load_stars_from_catalog(catalog_path: &str) -> Result<Vec<Star>, csv::Error> {
+    let stars = csv::Reader::from_path(catalog_path)?
         .deserialize()
-        .map(|result| {
-            let r: HashMap<String, String> = result.unwrap();
+        .filter_map(|s| {
+            let vals: HashMap<String, String> = s.unwrap();
 
-            Star {
-                ra: r["ra"].parse().unwrap(),
-                dec: r["dec"].parse().unwrap(),
-                absmag: r["absmag"].parse().unwrap(),
-            }
+            let ra = vals["ra"].parse().ok()?;
+            let dec = vals["dec"].parse().ok()?;
+            let absmag = vals["absmag"].parse().ok()?;
+
+            Some(Star { ra, dec, absmag })
         })
         .collect();
 
-    stars
+    Ok(stars)
 }
 
 fn main() {
     println!("Loading the Star catalog...");
-    let stars = load_stars_from_catalog(STARS_CATALOG_PATH);
+    let stars = load_stars_from_catalog(STARS_CATALOG_PATH).unwrap();
     println!("Done. Number of catalog items: {}", stars.len());
 
     let canvas = DMatrix::repeat(HEIGHT, WIDTH, 1000);
