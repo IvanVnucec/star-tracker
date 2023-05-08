@@ -22,28 +22,36 @@ impl Star {
     }
 }
 
-fn load_stars_from_catalog() -> Vec<Star> {
-    const STARS_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
+struct StarCatalog {
+    stars: Vec<Star>,
+}
 
-    csv::Reader::from_path(STARS_CATALOG_PATH)
-        .unwrap()
-        .deserialize()
-        .map(|result| {
-            let r: HashMap<String, String> = result.unwrap();
+impl StarCatalog {
+    fn new(filepath: &'static str) -> StarCatalog {
+        StarCatalog {
+            stars: csv::Reader::from_path(filepath)
+                .unwrap()
+                .deserialize()
+                .map(|item| {
+                    let fields: HashMap<String, String> = item.unwrap();
 
-            Star {
-                ra: r["rarad"].parse().unwrap(),
-                dec: r["decrad"].parse().unwrap(),
-                absmag: r["absmag"].parse().unwrap(),
-            }
-        })
-        .collect()
+                    Star {
+                        ra: fields["rarad"].parse().unwrap(),
+                        dec: fields["decrad"].parse().unwrap(),
+                        absmag: fields["absmag"].parse().unwrap(),
+                    }
+                })
+                .collect(),
+        }
+    }
 }
 
 fn main() {
-    println!("Loading the Star catalog...");
-    let stars = load_stars_from_catalog();
-    println!("Done. Number of catalog items: {}", stars.len());
+    const STAR_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
+
+    println!("Loading Star catalog from '{}'...", STAR_CATALOG_PATH);
+    let catalog = StarCatalog::new(STAR_CATALOG_PATH);
+    println!("Done. Number of catalog items: {}", catalog.stars.len());
 
     const WIDTH: usize = 500;
     const HEIGHT: usize = 500;
