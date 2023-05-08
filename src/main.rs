@@ -60,6 +60,10 @@ impl ImageSensor {
             image: DMatrix::zeros(size.0, size.1),
         }
     }
+
+    fn capture(&self, orientation: Vector3<f64>, stars: Vec<Star>) {
+        todo!("implement camera transformations")
+    }
 }
 
 struct StarTracker {
