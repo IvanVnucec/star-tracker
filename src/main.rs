@@ -46,24 +46,44 @@ impl StarCatalog {
     }
 }
 
+struct ImageSensor {
+    /// sensor size in Width x Height pixels
+    size: (usize, usize),
+    /// captured image arranged in column-by-columns 10 bit values
+    image: DMatrix<u32>,
+}
+
+impl ImageSensor {
+    fn new(size: (usize, usize)) -> ImageSensor {
+        ImageSensor {
+            size,
+            image: DMatrix::zeros(size.0, size.1),
+        }
+    }
+}
+
 struct StarTracker {
     /// rectangular FOV (in radians)
     fov: (f64, f64),
     /// orientation unit vector in ECI coordinate frame
     orientation: Vector3<f64>,
-    // star catalog
+    /// star catalog
     catalog: StarCatalog,
+    /// image sensor
+    image_sensor: ImageSensor,
 }
 
 impl StarTracker {
     fn new(catalog: StarCatalog) -> StarTracker {
         const FOV_DEG: (f64, f64) = (15.0, 15.0);
         const INITIAL_ORIENTATION: Vector3<f64> = Vector3::new(1.0, 0.0, 0.0);
+        const IMAGE_SENSOR_SIZE: (usize, usize) = (640, 480);
 
         StarTracker {
             fov: (FOV_DEG.0.to_radians(), FOV_DEG.1.to_radians()),
             orientation: INITIAL_ORIENTATION,
             catalog,
+            image_sensor: ImageSensor::new(IMAGE_SENSOR_SIZE),
         }
     }
 }
@@ -77,21 +97,18 @@ fn main() {
 
     let tracker = StarTracker::new(catalog);
 
-    const WIDTH: usize = 500;
-    const HEIGHT: usize = 500;
-    let canvas = DMatrix::repeat(HEIGHT, WIDTH, 1000);
-
-    let mut window = Window::new("Simulator", WIDTH, HEIGHT, WindowOptions::default())
+    let (width, height) = tracker.image_sensor.size;
+    let mut window = Window::new("Simulator", width, height, WindowOptions::default())
         .unwrap_or_else(|e| {
             panic!("{}", e);
         });
 
-    // Limit to max ~60 fps update rate
+    // limit to max ~60 fps update rate
     window.limit_update_rate(Some(Duration::from_micros(16600)));
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         window
-            .update_with_buffer(canvas.as_slice(), WIDTH, HEIGHT)
+            .update_with_buffer(tracker.image_sensor.image.as_slice(), width, height)
             .unwrap();
     }
 }
