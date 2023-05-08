@@ -46,12 +46,36 @@ impl StarCatalog {
     }
 }
 
+struct StarTracker {
+    /// rectangular FOV (in radians)
+    fov: (f64, f64),
+    /// orientation unit vector in ECI coordinate frame
+    orientation: Vector3<f64>,
+    // star catalog
+    catalog: StarCatalog,
+}
+
+impl StarTracker {
+    fn new(catalog: StarCatalog) -> StarTracker {
+        const FOV_DEG: (f64, f64) = (15.0, 15.0);
+        const INITIAL_ORIENTATION: Vector3<f64> = Vector3::new(1.0, 0.0, 0.0);
+
+        StarTracker {
+            fov: (FOV_DEG.0.to_radians(), FOV_DEG.1.to_radians()),
+            orientation: INITIAL_ORIENTATION,
+            catalog,
+        }
+    }
+}
+
 fn main() {
     const STAR_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
 
     println!("Loading Star catalog from '{}'...", STAR_CATALOG_PATH);
     let catalog = StarCatalog::new(STAR_CATALOG_PATH);
     println!("Done. Number of catalog items: {}", catalog.stars.len());
+
+    let tracker = StarTracker::new(catalog);
 
     const WIDTH: usize = 500;
     const HEIGHT: usize = 500;
