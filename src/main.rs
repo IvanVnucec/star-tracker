@@ -61,7 +61,7 @@ impl ImageSensor {
         }
     }
 
-    fn capture(&self, orientation: Vector3<f64>, stars: Vec<Star>) {
+    fn capture(&self, orientation: &Vector3<f64>, stars: &Vec<Star>) {
         todo!("implement camera transformations")
     }
 }
@@ -90,6 +90,11 @@ impl StarTracker {
             image_sensor: ImageSensor::new(IMAGE_SENSOR_SIZE),
         }
     }
+
+    fn update(&self) {
+        self.image_sensor
+            .capture(&self.orientation, &self.catalog.stars);
+    }
 }
 
 fn main() {
@@ -111,6 +116,8 @@ fn main() {
     window.limit_update_rate(Some(Duration::from_micros(16600)));
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
+        tracker.update();
+
         window
             .update_with_buffer(tracker.image_sensor.image.as_slice(), width, height)
             .unwrap();
