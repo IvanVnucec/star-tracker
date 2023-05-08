@@ -1,16 +1,29 @@
 use std::{collections::HashMap, time::Duration};
 
 use minifb::{Key, Window, WindowOptions};
-use nalgebra::DMatrix;
+use nalgebra::{DMatrix, Vector3};
 
 const WIDTH: usize = 500;
 const HEIGHT: usize = 500;
 const STARS_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
 
+#[derive(Debug)]
 struct Star {
     ra: f64,
     dec: f64,
     absmag: f64,
+}
+
+impl Star {
+    /// Returns the Star unit vector defined in the Earth-centered inertial
+    /// (ECI) coordinate frame.
+    fn xyz(&self) -> Vector3<f64> {
+        Vector3::new(
+            self.ra.cos() * self.dec.cos(),
+            self.ra.sin() * self.dec.cos(),
+            self.dec.sin(),
+        )
+    }
 }
 
 fn load_stars_from_catalog(catalog_path: &str) -> Result<Vec<Star>, csv::Error> {
@@ -19,8 +32,8 @@ fn load_stars_from_catalog(catalog_path: &str) -> Result<Vec<Star>, csv::Error> 
         .filter_map(|s| {
             let vals: HashMap<String, String> = s.unwrap();
 
-            let ra = vals["ra"].parse().ok()?;
-            let dec = vals["dec"].parse().ok()?;
+            let ra = vals["rarad"].parse().ok()?;
+            let dec = vals["decrad"].parse().ok()?;
             let absmag = vals["absmag"].parse().ok()?;
 
             Some(Star { ra, dec, absmag })
