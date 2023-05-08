@@ -3,10 +3,6 @@ use std::{collections::HashMap, time::Duration};
 use minifb::{Key, Window, WindowOptions};
 use nalgebra::{DMatrix, Vector3};
 
-const WIDTH: usize = 500;
-const HEIGHT: usize = 500;
-const STARS_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
-
 #[derive(Debug)]
 struct Star {
     ra: f64,
@@ -26,28 +22,31 @@ impl Star {
     }
 }
 
-fn load_stars_from_catalog(catalog_path: &str) -> Result<Vec<Star>, csv::Error> {
-    let stars = csv::Reader::from_path(catalog_path)?
+fn load_stars_from_catalog() -> Vec<Star> {
+    const STARS_CATALOG_PATH: &str = "catalog/hygdata_v3.csv";
+
+    csv::Reader::from_path(STARS_CATALOG_PATH)
+        .unwrap()
         .deserialize()
-        .filter_map(|s| {
-            let vals: HashMap<String, String> = s.unwrap();
+        .map(|result| {
+            let r: HashMap<String, String> = result.unwrap();
 
-            let ra = vals["rarad"].parse().ok()?;
-            let dec = vals["decrad"].parse().ok()?;
-            let absmag = vals["absmag"].parse().ok()?;
-
-            Some(Star { ra, dec, absmag })
+            Star {
+                ra: r["rarad"].parse().unwrap(),
+                dec: r["decrad"].parse().unwrap(),
+                absmag: r["absmag"].parse().unwrap(),
+            }
         })
-        .collect();
-
-    Ok(stars)
+        .collect()
 }
 
 fn main() {
     println!("Loading the Star catalog...");
-    let stars = load_stars_from_catalog(STARS_CATALOG_PATH).unwrap();
+    let stars = load_stars_from_catalog();
     println!("Done. Number of catalog items: {}", stars.len());
 
+    const WIDTH: usize = 500;
+    const HEIGHT: usize = 500;
     let canvas = DMatrix::repeat(HEIGHT, WIDTH, 1000);
 
     let mut window = Window::new("Simulator", WIDTH, HEIGHT, WindowOptions::default())
