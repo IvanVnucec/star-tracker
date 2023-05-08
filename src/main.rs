@@ -27,8 +27,8 @@ struct StarCatalog {
 }
 
 impl StarCatalog {
-    fn new(filepath: &'static str) -> StarCatalog {
-        StarCatalog {
+    fn new(filepath: &'static str) -> Self {
+        Self {
             stars: csv::Reader::from_path(filepath)
                 .unwrap()
                 .deserialize()
@@ -54,8 +54,8 @@ struct ImageSensor {
 }
 
 impl ImageSensor {
-    fn new(size: (usize, usize)) -> ImageSensor {
-        ImageSensor {
+    fn new(size: (usize, usize)) -> Self {
+        Self {
             size,
             image: DMatrix::zeros(size.0, size.1),
         }
@@ -78,12 +78,12 @@ struct StarTracker {
 }
 
 impl StarTracker {
-    fn new(catalog: StarCatalog) -> StarTracker {
+    fn new(catalog: StarCatalog) -> Self {
         const FOV_DEG: (f64, f64) = (15.0, 15.0);
         const INITIAL_ORIENTATION: Vector3<f64> = Vector3::new(1.0, 0.0, 0.0);
         const IMAGE_SENSOR_SIZE: (usize, usize) = (640, 480);
 
-        StarTracker {
+        Self {
             fov: (FOV_DEG.0.to_radians(), FOV_DEG.1.to_radians()),
             orientation: INITIAL_ORIENTATION,
             catalog,
