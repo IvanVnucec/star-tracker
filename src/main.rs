@@ -4,22 +4,26 @@ use minifb::{Key, Window, WindowOptions};
 use nalgebra::{DMatrix, Vector3};
 
 #[derive(Debug)]
-struct Star {
-    ra: f64,
-    dec: f64,
-    absmag: f64,
+enum Orientation {
+    RaDec(f64, f64),
+    XYZ(Vector3<f64>),
 }
 
-impl Star {
-    /// Returns the Star unit vector defined in the Earth-centered inertial
-    /// (ECI) coordinate frame.
-    fn xyz(&self) -> Vector3<f64> {
-        Vector3::new(
-            self.ra.cos() * self.dec.cos(),
-            self.ra.sin() * self.dec.cos(),
-            self.dec.sin(),
-        )
+impl Orientation {
+    fn to_xyz(&self) -> Vector3<f64> {
+        match self {
+            Orientation::RaDec(ra, dec) => {
+                Vector3::new(ra.cos() * dec.cos(), ra.sin() * dec.cos(), dec.sin())
+            }
+            Orientation::XYZ(xyz) => *xyz,
+        }
     }
+}
+
+#[derive(Debug)]
+struct Star {
+    orientation: Orientation,
+    absmag: f64,
 }
 
 struct StarCatalog {
@@ -36,8 +40,10 @@ impl StarCatalog {
                     let fields: HashMap<String, String> = item.unwrap();
 
                     Star {
-                        ra: fields["rarad"].parse().unwrap(),
-                        dec: fields["decrad"].parse().unwrap(),
+                        orientation: Orientation::RaDec(
+                            fields["rarad"].parse().unwrap(),
+                            fields["decrad"].parse().unwrap(),
+                        ),
                         absmag: fields["absmag"].parse().unwrap(),
                     }
                 })
@@ -61,7 +67,7 @@ impl ImageSensor {
         }
     }
 
-    fn capture(&self, orientation: &Vector3<f64>, stars: &Vec<Star>) {
+    fn capture(&self, orientation: &Orientation, stars: &Vec<Star>) {
         todo!("implement camera transformations")
     }
 }
@@ -69,8 +75,8 @@ impl ImageSensor {
 struct StarTracker {
     /// rectangular FOV (in radians)
     fov: (f64, f64),
-    /// orientation unit vector in ECI coordinate frame
-    orientation: Vector3<f64>,
+    /// orientation in ECI coordinate frame
+    orientation: Orientation,
     /// star catalog
     catalog: StarCatalog,
     /// image sensor
@@ -80,7 +86,7 @@ struct StarTracker {
 impl StarTracker {
     fn new(catalog: StarCatalog) -> Self {
         const FOV_DEG: (f64, f64) = (15.0, 15.0);
-        const INITIAL_ORIENTATION: Vector3<f64> = Vector3::new(1.0, 0.0, 0.0);
+        const INITIAL_ORIENTATION: Orientation = Orientation::RaDec(0.0, 0.0);
         const IMAGE_SENSOR_SIZE: (usize, usize) = (640, 480);
 
         Self {
