@@ -50,8 +50,21 @@ impl ImageSensor {
         }
     }
 
-    fn capture(&self, orientation: &(f64, f64), stars: &Vec<Star>) {
-        todo!("implement camera transformations")
+    fn project(&self, fov: &(f64, f64), star: &Star) -> (i32, i32) {
+        (0, 0)
+    }
+
+    fn capture(&mut self, fov: &(f64, f64), orientation: &(f64, f64), stars: &Vec<Star>) {
+        let (width, height) = self.size;
+
+        for s in stars {
+            if s.absmag > 5.0 {
+                let (u, v) = self.project(fov, s);
+                if u >= 0 && v >= 0 && u < width as i32 && v < height as i32 {
+                    self.image[(u as usize, v as usize)] = 10000;
+                }
+            }
+        }
     }
 }
 
@@ -80,9 +93,15 @@ impl StarTracker {
         }
     }
 
-    fn update(&self) {
+    fn update(&mut self) {
         self.image_sensor
-            .capture(&self.orientation, &self.catalog.stars);
+            .capture(&self.fov, &self.orientation, &self.catalog.stars);
+    }
+
+    fn update_orientation_by(&mut self, increment: &(f64, f64)) {
+        self.orientation.0 += increment.0;
+        self.orientation.1 += increment.1;
+        println!("{:?}", self.orientation);
     }
 }
 
@@ -93,7 +112,7 @@ fn main() {
     let catalog = StarCatalog::new(STAR_CATALOG_PATH);
     println!("Done. Number of catalog items: {}", catalog.stars.len());
 
-    let tracker = StarTracker::new(catalog);
+    let mut tracker = StarTracker::new(catalog);
 
     let (width, height) = tracker.image_sensor.size;
     let mut window = Window::new("Simulator", width, height, WindowOptions::default())
@@ -105,6 +124,14 @@ fn main() {
     window.limit_update_rate(Some(Duration::from_micros(16600)));
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
+        window.get_keys().iter().for_each(|key| match key {
+            Key::Up => tracker.update_orientation_by(&(1.0, 0.0)),
+            Key::Right => tracker.update_orientation_by(&(0.0, 1.0)),
+            Key::Down => tracker.update_orientation_by(&(-1.0, 0.0)),
+            Key::Left => tracker.update_orientation_by(&(0.0, -1.0)),
+            _ => (),
+        });
+
         tracker.update();
 
         window
