@@ -4,25 +4,8 @@ use minifb::{Key, Window, WindowOptions};
 use nalgebra::{DMatrix, Vector3};
 
 #[derive(Debug)]
-enum Orientation {
-    RaDec(f64, f64),
-    XYZ(Vector3<f64>),
-}
-
-impl Orientation {
-    fn to_xyz(&self) -> Vector3<f64> {
-        match self {
-            Orientation::RaDec(ra, dec) => {
-                Vector3::new(ra.cos() * dec.cos(), ra.sin() * dec.cos(), dec.sin())
-            }
-            Orientation::XYZ(xyz) => *xyz,
-        }
-    }
-}
-
-#[derive(Debug)]
 struct Star {
-    orientation: Orientation,
+    orientation: (f64, f64),
     absmag: f64,
 }
 
@@ -40,7 +23,7 @@ impl StarCatalog {
                     let fields: HashMap<String, String> = item.unwrap();
 
                     Star {
-                        orientation: Orientation::RaDec(
+                        orientation: (
                             fields["rarad"].parse().unwrap(),
                             fields["decrad"].parse().unwrap(),
                         ),
@@ -67,7 +50,7 @@ impl ImageSensor {
         }
     }
 
-    fn capture(&self, orientation: &Orientation, stars: &Vec<Star>) {
+    fn capture(&self, orientation: &(f64, f64), stars: &Vec<Star>) {
         todo!("implement camera transformations")
     }
 }
@@ -76,7 +59,7 @@ struct StarTracker {
     /// rectangular FOV (in radians)
     fov: (f64, f64),
     /// orientation in ECI coordinate frame
-    orientation: Orientation,
+    orientation: (f64, f64),
     /// star catalog
     catalog: StarCatalog,
     /// image sensor
@@ -86,7 +69,7 @@ struct StarTracker {
 impl StarTracker {
     fn new(catalog: StarCatalog) -> Self {
         const FOV_DEG: (f64, f64) = (15.0, 15.0);
-        const INITIAL_ORIENTATION: Orientation = Orientation::RaDec(0.0, 0.0);
+        const INITIAL_ORIENTATION: (f64, f64) = (0.0, 0.0);
         const IMAGE_SENSOR_SIZE: (usize, usize) = (640, 480);
 
         Self {
