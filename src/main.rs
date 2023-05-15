@@ -1,7 +1,7 @@
 use std::{collections::HashMap, time::Duration};
 
 use minifb::{Key, Window, WindowOptions};
-use nalgebra::{DMatrix, Matrix1x3, Matrix3, Matrix3x1, Vector3, Vector2};
+use nalgebra::{DMatrix, Matrix1x3, Matrix3, Matrix3x1, Vector2, Vector3};
 
 #[derive(Debug)]
 struct Star {
@@ -54,10 +54,10 @@ impl ImageSensor {
         }
     }
 
-    fn project(&self, boresight: &(f64, f64), star: &Star) -> (i32, i32) {
+    fn project(&self, boresight: &(f64, f64), rotation: f64, star: &Star) -> (i32, i32) {
         let (ra, dec) = star.orientation;
         let (ra0, dec0) = boresight;
-        let psi = 0.0_f64.to_radians();
+        let psi = rotation;
 
         let a = Matrix1x3::new(ra.cos() * dec.cos(), ra.sin() * dec.cos(), dec.sin());
         let b = Matrix3::new(
@@ -101,18 +101,24 @@ impl ImageSensor {
 
         let uv = (
             (-xy.x / sx + ox as f64) as i32,
-            (-xy.y / sy + oy as f64) as i32
+            (-xy.y / sy + oy as f64) as i32,
         );
 
         uv
     }
 
-    fn capture(&mut self, fov: &(f64, f64), orientation: &(f64, f64), stars: &Vec<Star>) {
+    fn capture(
+        &mut self,
+        fov: &(f64, f64),
+        orientation: &(f64, f64),
+        rotation: f64,
+        stars: &Vec<Star>,
+    ) {
         let (width, height) = self.size;
 
         for s in stars {
             if s.absmag > 5.0 {
-                let (u, v) = self.project(&orientation, s);
+                let (u, v) = self.project(&orientation, rotation, s);
                 if u >= 0 && v >= 0 && u < width as i32 && v < height as i32 {
                     self.image[(u as usize, v as usize)] = 10000;
                 }
@@ -126,6 +132,7 @@ struct StarTracker {
     fov: (f64, f64),
     /// orientation in ECI coordinate frame
     orientation: (f64, f64),
+    rotation: f64,
     /// star catalog
     catalog: StarCatalog,
     /// image sensor
@@ -136,6 +143,7 @@ impl StarTracker {
     fn new(catalog: StarCatalog) -> Self {
         const FOV_DEG: (f64, f64) = (15.0, 15.0);
         const INITIAL_ORIENTATION: (f64, f64) = (0.0, 0.0);
+        const INITIAL_RORATION: f64 = 0.0;
         const IMAGE_SENSOR_SIZE: (usize, usize) = (640, 480);
         const PIXEL_RES: (f64, f64) = (10.0, 10.0);
         const FOCAL_LEN: f64 = 1000.0;
@@ -143,20 +151,26 @@ impl StarTracker {
         Self {
             fov: (FOV_DEG.0.to_radians(), FOV_DEG.1.to_radians()),
             orientation: INITIAL_ORIENTATION,
+            rotation: INITIAL_RORATION,
             catalog,
             image_sensor: ImageSensor::new(IMAGE_SENSOR_SIZE, PIXEL_RES, FOCAL_LEN),
         }
     }
 
     fn update(&mut self) {
-        self.image_sensor
-            .capture(&self.fov, &self.orientation, &self.catalog.stars);
+        self.image_sensor.capture(
+            &self.fov,
+            &self.orientation,
+            self.rotation,
+            &self.catalog.stars,
+        );
     }
 
-    fn update_orientation_by(&mut self, increment: &(f64, f64)) {
+    fn update_orientation_by(&mut self, increment: &(f64, f64), rotation: f64) {
         self.orientation.0 += increment.0;
         self.orientation.1 += increment.1;
-        println!("{:?}", self.orientation);
+        self.rotation += rotation;
+        println!("{:?}, {:?}", self.orientation, self.rotation);
     }
 }
 
@@ -180,10 +194,12 @@ fn main() {
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         window.get_keys().iter().for_each(|key| match key {
-            Key::Up => tracker.update_orientation_by(&(1.0, 0.0)),
-            Key::Right => tracker.update_orientation_by(&(0.0, 1.0)),
-            Key::Down => tracker.update_orientation_by(&(-1.0, 0.0)),
-            Key::Left => tracker.update_orientation_by(&(0.0, -1.0)),
+            Key::W => tracker.update_orientation_by(&(1.0, 0.0), 0.0),
+            Key::D => tracker.update_orientation_by(&(0.0, 1.0), 0.0),
+            Key::S => tracker.update_orientation_by(&(-1.0, 0.0), 0.0),
+            Key::A => tracker.update_orientation_by(&(0.0, -1.0), 0.0),
+            Key::Q => tracker.update_orientation_by(&(0.0, 0.0), -1.0),
+            Key::E => tracker.update_orientation_by(&(0.0, 0.0), 1.0),
             _ => (),
         });
 
