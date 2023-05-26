@@ -1,7 +1,7 @@
-use std::{collections::HashMap, time::Duration};
+use std::collections::HashMap;
 
-use minifb::{Key, Window, WindowOptions};
-use nalgebra::{DMatrix, Matrix1x3, Matrix3, Matrix3x1, Vector2, Vector3};
+use nalgebra::{DMatrix, Matrix1x3, Matrix3, Vector2};
+use raylib::prelude::*;
 
 #[derive(Debug)]
 struct Star {
@@ -184,29 +184,37 @@ fn main() {
     let mut tracker = StarTracker::new(catalog);
 
     let (width, height) = tracker.image_sensor.size;
-    let mut window = Window::new("Simulator", width, height, WindowOptions::default())
-        .unwrap_or_else(|e| {
-            panic!("{}", e);
-        });
 
-    // limit to max ~60 fps update rate
-    window.limit_update_rate(Some(Duration::from_micros(16600)));
+    let (mut rl, thread) = raylib::init()
+        .size(width as i32, height as i32)
+        .title("Simulator")
+        .build();
 
-    while window.is_open() && !window.is_key_down(Key::Escape) {
-        window.get_keys().iter().for_each(|key| match key {
-            Key::W => tracker.update_orientation_by(&(1.0, 0.0), 0.0),
-            Key::D => tracker.update_orientation_by(&(0.0, 1.0), 0.0),
-            Key::S => tracker.update_orientation_by(&(-1.0, 0.0), 0.0),
-            Key::A => tracker.update_orientation_by(&(0.0, -1.0), 0.0),
-            Key::Q => tracker.update_orientation_by(&(0.0, 0.0), -1.0),
-            Key::E => tracker.update_orientation_by(&(0.0, 0.0), 1.0),
-            _ => (),
-        });
+    rl.set_target_fps(60);
+
+    while !rl.window_should_close() {
+        let mut d = rl.begin_drawing(&thread);
+        d.clear_background(Color::BLACK);
+
+        if d.is_key_down(KeyboardKey::KEY_W) {
+            tracker.update_orientation_by(&(1.0, 0.0), 0.0);
+        }
+        if d.is_key_down(KeyboardKey::KEY_D) {
+            tracker.update_orientation_by(&(0.0, 1.0), 0.0);
+        }
+        if d.is_key_down(KeyboardKey::KEY_S) {
+            tracker.update_orientation_by(&(-1.0, 0.0), 0.0);
+        }
+        if d.is_key_down(KeyboardKey::KEY_A) {
+            tracker.update_orientation_by(&(0.0, -1.0), 0.0);
+        }
+        if d.is_key_down(KeyboardKey::KEY_Q) {
+            tracker.update_orientation_by(&(0.0, 0.0), -1.0);
+        }
+        if d.is_key_down(KeyboardKey::KEY_E) {
+            tracker.update_orientation_by(&(0.0, 0.0), 1.0);
+        }
 
         tracker.update();
-
-        window
-            .update_with_buffer(tracker.image_sensor.image.as_slice(), width, height)
-            .unwrap();
     }
 }

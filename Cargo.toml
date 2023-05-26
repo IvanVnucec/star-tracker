@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 csv = "1.2.1"
-minifb = "0.24.0"
 nalgebra = "0.32.2"
+raylib = "3.7.0"
